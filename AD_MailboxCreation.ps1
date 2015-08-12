@@ -1,6 +1,6 @@
 ﻿# Static Entries
-$ou = "OU=Users,OU=Accounts,DC=hq,DC=crabel,DC=com"
-$intdomain = "hq.crabel.com"
+$ou = "OU=Users,OU=Accounts,DC=contoso,DC=com"
+$intdomain = "contoso.com"
 
 # Data Entry section
 $fname = Read-Host "First Name"
@@ -72,8 +72,8 @@ write-host -ForegroundColor Cyan "Creating home directory for $fname $lname"
 
 pause
 
-$teststring = "\\hq\shares\homedir\$user"
-new-item -name $user -ItemType Directory -path \\hq\shares\HomeDir | out-null
+$teststring = "\\contoso\shares\home\$user"
+new-item -name $user -ItemType Directory -path \\contoso\shares\Home | out-null
 
 
 # Confirm creation of user's home directory
@@ -95,9 +95,9 @@ write-host -ForegroundColor Cyan "Setting permissions on $fname $lname's home di
 
 pause
 
-$ACL = Get-Acl "\\hq\shares\homedir\$user"
+$ACL = Get-Acl "\\contoso\shares\home\$user"
 $ACL.SetAccessRuleProtection($false, $false)
-$rights = "hq.crabel.com\$user","FullControl", "ContainerInherit, ObjectInherit", "None", "Allow"
+$rights = "contoso.com\$user","FullControl", "ContainerInherit, ObjectInherit", "None", "Allow"
 $accessrule =  New-Object System.Security.AccessControl.FileSystemAccessRule $rights
 
 $acl.SetAccessRule($accessrule)
@@ -109,7 +109,7 @@ write-host -foregroundcolor cyan "Setting additional user account parameters"
 
 pause
 
-get-aduser $username | %  {set-aduser $_ -HomeDrive "H:" -HomeDirectory ('\\hq\shares\homedir\' + $_.SamAccountName)}
+get-aduser $username | %  {set-aduser $_ -HomeDrive "H:" -HomeDirectory ('\\contoso\shares\home\' + $_.SamAccountName)}
 set-aduser $username -title $title -Description $desc -Office $office
 
 
